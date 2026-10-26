@@ -42,8 +42,12 @@ export const aurAdapter: SourceAdapter = {
 					if (authorFilter) {
 						const authorBlockMatch = entry.match(/<author>([\s\S]*?)<\/author>/);
 						if (authorBlockMatch) {
-							const authorText = authorBlockMatch[1].toLowerCase();
-							if (!authorText.includes(authorFilter)) {
+							const authorBlock = authorBlockMatch[1];
+
+							const nameMatch = authorBlock.match(/<name>([^<]+)<\/name>/i);
+							const authorName = nameMatch ? nameMatch[1].trim().toLowerCase() : '';
+
+							if (authorName !== authorFilter.toLowerCase()) {
 								continue;
 							}
 						}
