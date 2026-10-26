@@ -1,8 +1,9 @@
+import { Env } from './types';
 import { ALLOWED_SOURCES, getAdapter } from './adapters';
 import { generateSvgGraph } from './renderer';
 
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
 		const url = new URL(request.url);
 		const user = url.searchParams.get('user');
 		const sourcesParam = url.searchParams.get('sources');
@@ -27,7 +28,7 @@ export default {
 			const adapter = getAdapter(sourceName);
 			if (!adapter) return {};
 			try {
-				return await adapter.fetchActivity(user);
+				return await adapter.fetchActivity(user, env);
 			} catch (err) {
 				console.error(`Error fetching from ${sourceName}:`, err);
 				return {};
