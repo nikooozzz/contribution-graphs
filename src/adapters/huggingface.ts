@@ -1,7 +1,7 @@
 import { SourceAdapter, Env } from '../types';
 
 export const huggingfaceAdapter: SourceAdapter = {
-	name: "hf",
+	name: "huggingface",
 	async fetchActivity(user: string, env: Env): Promise<Record<string, number>> {
 		const token = env.HUGGINGFACE_TOKEN;
 		const headers: Record<string, string> = {
