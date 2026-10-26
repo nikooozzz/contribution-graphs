@@ -14,5 +14,9 @@ const adapterRegistry: Record<string, SourceAdapter> = {
 export const ALLOWED_SOURCES = Object.keys(adapterRegistry);
 
 export function getAdapter(name: string): SourceAdapter | undefined {
+	if (!name || typeof name !== 'string') {
+		return undefined;
+	}
+
 	return adapterRegistry[name.toLowerCase()];
 }
