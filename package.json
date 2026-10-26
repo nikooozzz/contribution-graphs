@@ -2,14 +2,31 @@
 	"name": "contribution-graphs",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest run"
+		"test": "vitest run",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{ts,js}": [
+			"eslint --fix",
+			"prettier --write"
+		]
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-plugin": "^1.4.8",
+		"@eslint/js": "^10.0.1",
+		"eslint": "^10.13.0",
+		"eslint-config-prettier": "^10.1.8",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.6.0",
+		"prettier": "^3.9.10",
+		"typescript-eslint": "^8.72.1",
 		"vitest": "^5.0.5",
 		"wrangler": "^4.153.0"
 	}

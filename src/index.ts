@@ -3,9 +3,8 @@ import { ALLOWED_SOURCES, getAdapter } from './adapters';
 import { generateSvgGraph } from './renderer';
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
-		const path = url.pathname;
 
 		const cacheKey = new Request(request.url, request);
 		const cache = caches.default;
@@ -13,16 +12,16 @@ export default {
 			return await generateAndCacheGraph(cacheKey, url, env);
 		}
 
-		let cacheResp = await cache.match(cacheKey);
+		const cacheResp = await cache.match(cacheKey);
 		if (cacheResp) {
-			console.log('Cache hit for request!')
+			console.log('Cache hit for request!');
 			ctx.waitUntil(updateCacheInBackground(cacheKey, url, env));
 			return cacheResp;
 		}
 
 		return await generateAndCacheGraph(cacheKey, url, env);
-	}
-}
+	},
+};
 
 async function generateAndCacheGraph(cacheKey: Request, url: URL, env: Env): Promise<Response> {
 	const user = url.searchParams.get('user');
@@ -31,16 +30,11 @@ async function generateAndCacheGraph(cacheKey: Request, url: URL, env: Env): Pro
 		return new Response('Missing "user" parameter', { status: 400 });
 	}
 
-	const sources = sourcesParam
-		? sourcesParam.split(',').map(s => s.trim().toLowerCase())
-		: ['github'];
+	const sources = sourcesParam ? sourcesParam.split(',').map((s) => s.trim().toLowerCase()) : ['github'];
 
-	const invalidSources = sources.filter(s => !ALLOWED_SOURCES.includes(s));
+	const invalidSources = sources.filter((s) => !ALLOWED_SOURCES.includes(s));
 	if (invalidSources.length > 0) {
-		return new Response(
-			`Invalid source(s): ${invalidSources.join(', ')}. Allowed: ${ALLOWED_SOURCES.join(', ')}`,
-			{ status: 400 }
-		);
+		return new Response(`Invalid source(s): ${invalidSources.join(', ')}. Allowed: ${ALLOWED_SOURCES.join(', ')}`, { status: 400 });
 	}
 
 	const activityPromises = sources.map(async (sourceName) => {
