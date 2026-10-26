@@ -5,5 +5,5 @@ export interface Env {
 
 export interface SourceAdapter {
 	name: string;
-	fetchActivity(user: string): Promise<Record<string, number>>;
+	fetchActivity(user: string, env: Env, urlParams?: URLSearchParams): Promise<Record<string, number>>;
 }

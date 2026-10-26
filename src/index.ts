@@ -47,7 +47,7 @@ async function generateAndCacheGraph(cacheKey: Request, url: URL, env: Env): Pro
 		const adapter = getAdapter(sourceName);
 		if (!adapter) return {};
 		try {
-			return await adapter.fetchActivity(user, env);
+			return await adapter.fetchActivity(user, env, url.searchParams);
 		} catch (err) {
 			console.error(`Error fetching from ${sourceName}:`, err);
 			return {};
