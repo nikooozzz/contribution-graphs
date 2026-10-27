@@ -2,13 +2,14 @@ const THEME = {
 	bg: '#0d1117',
 	text: '#8b949e',
 	empty: '#161b22',
-	levels: [
-		'#161b22',
-		'#0e4429',
-		'#006d32',
-		'#26a641',
-		'#39d353',
-	]
+	levels: ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'],
+};
+
+const SOURCE_CONFIG: Record<string, { label: string; color: string }> = {
+	github: { label: 'GH', color: '#24292e' },
+	gitlab: { label: 'GL', color: '#fc6d26' },
+	aur: { label: 'AUR', color: '#1793d1' },
+	hf: { label: 'HF', color: '#ffd21e' },
 };
 
 function getColorForCount(count: number): string {
@@ -19,7 +20,7 @@ function getColorForCount(count: number): string {
 	return THEME.levels[4];
 }
 
-export function generateSvgGraph(user: string, activityMap: Record<string, number>): string {
+export function generateSvgGraph(user: string, activityMap: Record<string, number>, activeSources: string[] = []): string {
 	const TILE_SIZE = 10;
 	const GAP = 3;
 	const PADDING_LEFT = 30;
@@ -28,7 +29,7 @@ export function generateSvgGraph(user: string, activityMap: Record<string, numbe
 	const DAYS_PER_WEEK = 7;
 
 	const totalWidth = PADDING_LEFT + WEEKS * (TILE_SIZE + GAP) + 20;
-	const totalHeight = PADDING_TOP + DAYS_PER_WEEK * (TILE_SIZE + GAP) + 20;
+	const totalHeight = PADDING_TOP + DAYS_PER_WEEK * (TILE_SIZE + GAP) + 25;
 
 	const today = new Date();
 	const endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -66,6 +67,8 @@ export function generateSvgGraph(user: string, activityMap: Record<string, numbe
 		}
 	}
 
+	const indicatorsSvg = generateSvgIndicators(activeSources, totalWidth, totalHeight);
+
 	return `
 	<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${totalHeight}" viewBox="0 0 ${totalWidth} ${totalHeight}">
 		<style>
@@ -87,5 +90,33 @@ export function generateSvgGraph(user: string, activityMap: Record<string, numbe
 		<g>
 			${rectsSvg}
 		</g>
+
+		${indicatorsSvg}
 	</svg>`.trim();
+}
+
+function generateSvgIndicators(activeSources: string[] = [], width: number, height: number) {
+	let indicatorsSvg = '';
+	if (activeSources.length > 0) {
+		const badgeWidth = 28;
+		const badgeHeight = 16;
+		const spacing = 4;
+		const startX = width - 20 - activeSources.length * (badgeWidth + spacing);
+		const startY = height - 22;
+
+		indicatorsSvg = activeSources
+			.map((source, index) => {
+				const config = SOURCE_CONFIG[source.toLowerCase()] || { label: source.toUpperCase(), color: '#555' };
+				const x = startX + index * (badgeWidth + spacing);
+
+				return `
+				<g transform="translate(${x}, ${startY})" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9" font-weight="600">
+					<rect width="${badgeWidth}" height="${badgeHeight}" rx="3" fill="${config.color}" />
+					<text x="${badgeWidth / 2}" y="11" fill="#fff" text-anchor="middle">${config.label}</text>
+				</g>
+			`;
+			})
+			.join('');
+	}
+	return indicatorsSvg;
 }

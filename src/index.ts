@@ -57,7 +57,7 @@ async function generateAndCacheGraph(cacheKey: Request, url: URL, env: Env): Pro
 		}
 	}
 
-	const svgContent = generateSvgGraph(user, mergedActivity);
+	const svgContent = generateSvgGraph(user, mergedActivity, sources);
 
 	const response = new Response(svgContent, {
 		headers: {
