@@ -1,0 +1,55 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["type: bug", "status: triage"]
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: input
+    id: summary
+    attributes: 
+      label: Summary
+      description: A brief summary of what the bug is.
+      placeholder: e.g., Hugging Face adapter returns empty activity on missing user...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can others reproduce this issue?
+      placeholder: |
+        1. Request endpoint with `?user=nonexistent&sources=hf`
+        2. Observe response...
+      validations:
+        required: true
+  
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  
+  - type: upload
+    id: attachments
+    attributes:
+      label: Upload Attachments
+      description: If applicable, upload files or screenshots that help explain your problem.
+    validations:
+      required: false
+  
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: By opening this issue, you agree to follow our contribution guidelines.
+      options:
+        - label: I have checked existing issues to ensure this hasn't been reported yet.
+          required: true
